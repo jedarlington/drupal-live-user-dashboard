@@ -36,3 +36,5 @@ xmlrpc.php
 /themes
 
 bower_components/*
+
+.idea/*
