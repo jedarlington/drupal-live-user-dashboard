@@ -1,0 +1,12 @@
+user_dashboard.description:
+  title: Page Example
+  route_name: user_dashboard_description
+  expanded: TRUE
+
+user_dashboard.simple:
+  title: Simple - no arguments
+  route_name: user_dashboard_simple
+  parent: user_dashboard.description
+
+# We can't define a menu link for the user_dashboard_arguments route, because it
+# requires path arguments.

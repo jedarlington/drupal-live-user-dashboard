@@ -1,0 +1,9 @@
+userdashbaord-assets:
+  version: 1.x
+  css:
+    theme:
+      css/styles.css: {}
+  js:
+    js/user-dashboard-app.js: {}
+  dependencies:
+    - core/jquery
