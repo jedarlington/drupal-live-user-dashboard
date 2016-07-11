@@ -10,15 +10,15 @@
 <body>
 <h1>Backbone</h1>
 
-<!--<div id="nodes"></div>-->
-
-<!--<script id="nodeTemplate" type="text/template">-->
-    <!--<% _.each(nodes, function(node) { %>-->
-    <!--<div class="node">-->
-       <!--<% console.log(node); %>-->
-    <!--</div>-->
-    <!--<% }); %>-->
-<!--</script>-->
+<!-- Template of the Users View -->
+<script type="text/template" id="usersTemplate">
+    <% _.each(users, function (user) { %>
+    <div class="user">
+        <p>@<%= user.id %></p>
+        <!--<p class="text"><%= user %></p><p><%= user %></p>-->
+    </div>
+    <% }); %>
+</script>
 
 </body>
 </html>
