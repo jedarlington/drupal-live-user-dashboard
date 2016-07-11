@@ -1,4 +1,4 @@
-$(function () {
+(function () {
 
   // Model
   var User = Backbone.Model.extend({});
@@ -6,12 +6,26 @@ $(function () {
   // Collection
   var Users = Backbone.Collection.extend({
     model: User,
-    url: 'http://drupal8.drupalvm.dev/user/2'
+    url: 'userdash/data'
+
   });
 
   var users = new Users();
 
-  console.log(users.length);
+
+ var test = jQuery.getJSON('userdash/data?_format=hal_json');
+
+  // var TestUser = new User({uid: 1});
+  // TestUser.fetch({
+  //   success: function (user) {
+  //     // Check information retrived, could be used directly in a template
+  //     console.log(user.attributes);
+  //     console.log(user.attributes.mail[0].value);
+  //   }
+  // });
+
+
+  console.log(users.fetch());
 
   //users.add([
   //  {id: 1, name: 'James'},
@@ -94,4 +108,4 @@ $(function () {
   //  el: $('body')
   //});
 
-});
+})();
