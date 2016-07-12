@@ -1,19 +1,15 @@
-(function () {
+(function ($) {
 
   // Model
-  var User = Backbone.Model.extend({});
+  var User = Backbone.Model.extend({ });
 
   // Collection
   var Users = Backbone.Collection.extend({
     model: User,
     url: 'userdash/data'
-
   });
 
-  var users = new Users();
-
-
- var test = jQuery.getJSON('userdash/data?_format=hal_json');
+ //var test = jQuery.getJSON('userdash/data?_format=hal_json');
 
   // var TestUser = new User({uid: 1});
   // TestUser.fetch({
@@ -24,10 +20,69 @@
   //   }
   // });
 
+    // The View for a Person
 
-  console.log(users.fetch());
 
-  //users.add([
+
+
+    var UserDash = Backbone.View.extend({
+        el: '#userdashboard',
+        initialize: function () {
+            this.render();
+        },
+        render: function () {
+            this.collection.each(function (user) {
+
+                var userView = new UserView({ model: user });
+                this.$el.append(userView.render().el); // calling render method manually.
+
+            }, this);
+            console.log(this);
+            this.$el.html('Hello World');
+            return this; // returning this for chaining..
+        }
+    });
+
+    var UserView = Backbone.View.extend({
+        tagNAme: 'li',
+        template: _.template($('#userdashboard').html()),
+        render: function () {
+            this.$el.html( this.template(this.model.toJSON()));
+            this.$el.html('Hello World again');
+
+            return this;
+        }
+    });
+
+
+
+
+    var users = new Users();
+
+    var dashboard = new UserDash({collection: users});
+    //console.log(users.fetch());
+    //console.log(_.pluck(users.fetch(), 'responseText'));
+
+    users.fetch({
+        success : function(collection, response) {
+            console.log(collection);
+        },
+
+        error : function(collection, response) {
+            console.log();
+        }
+    });
+
+
+// The initialize function is always called when instantiating a Backbone View.
+// Consider it the constructor of the class.
+
+
+
+
+
+
+    //users.add([
   //  {id: 1, name: 'James'},
   //  {id: 2, name: 'Craig'}
   //]);
@@ -108,4 +163,4 @@
   //  el: $('body')
   //});
 
-})();
+})(jQuery);
