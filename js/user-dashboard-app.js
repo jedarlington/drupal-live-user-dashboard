@@ -129,12 +129,11 @@
 
                     var groupadmin = [];
                     _.filter(response, function (obj) {
-                        if (0 < obj.roles.length) {
+                        if (obj.roles[0] && obj.roles[0].target_id === 'administrator') {
                             groupadmin.push(obj);
                         }
                         return groupadmin;
                     });
-                    console.log(groupadmin);
                     return userList.render(collection, groupadmin).el;
 
                 }
