@@ -32,7 +32,6 @@
             _.bindAll(this, 'render');
         },
         render: function (collection, response) {
-
             var element = $(this.el);
             // Clear potential old entries first
             element.empty();
@@ -67,7 +66,7 @@
             var element = $(this.el);
             // Clear potential old entries first
             element.empty();
-           element.append(_.flatten(_.map(model.name, _.values)));
+            element.append(_.flatten(_.map(model.name, _.values)));
 
             return this;
         }
@@ -114,6 +113,7 @@
             $('.user-list').empty();
         },
         getusers: function () {
+            $('.user-list').empty();
             users.fetch({
                 success: function (collection, response) {
                     var userList = new UserList();
@@ -122,15 +122,20 @@
             });
         },
         showadmin: function () {
+            $('.user-list').empty();
             users.fetch({
                 success: function (collection, response) {
                     var userList = new UserList();
 
-                    console.log(response);
-                        console.log(_.where(response, {target_id: 'administrator'}));
-                    
-                       // return userList.render(collection, val).el;
-
+                    var groupadmin = [];
+                    _.filter(response, function (obj) {
+                        if (0 < obj.roles.length) {
+                            groupadmin.push(obj);
+                        }
+                        return groupadmin;
+                    });
+                    console.log(groupadmin);
+                    return userList.render(collection, groupadmin).el;
 
                 }
             });
