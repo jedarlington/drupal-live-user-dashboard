@@ -106,9 +106,8 @@
 
             element.append('<button id="roles-filter">Filter users by role</button><select id="roles-select" name="roles"></select>\n' +
                 '<button class="clear">Clear</button>\n' +
-                '<button class="sort-az">All Sorted a-z</button>\n' +
-                '<button class="fetch">All</button>');
-
+                '<button class="fetch">All</button>' +
+                '<button class="sort-az">All Sorted a-z</button>\n');
 
             // Loop through all the models and create a userView for each item.
             _.each(response, function (model, key) {
@@ -123,13 +122,72 @@
                         }));
                     }
                 }
-
             });
-
             return this;
         }
     });
 
+    var userDisplay = Backbone.View.extend({
+        className: 'addUser',
+        events: {
+            'click .getbyname': 'getbyname',
+            'click .savechanges': 'savechanges'
+        },
+        initialize: function () {
+        },
+        render: function (collection, response) {
+            var element = $(this.el);
+            // Clear potential old entries first
+            element.empty();
+
+            element.collection = collection;
+
+            element.append('<label for="user-name">User name:</label><input type="text" id="user-name" name="user-name" value="">');
+            element.append('<label for="user-access">Last access time:</label><input type="text" id="user-access" name="user-access" value="">');
+            element.append('<label for="user-email">Email Address:</label><input type="email" id="user-email" name="user-email" value="">');
+            element.append('<br /><button class="getbyname">Get User by name</button>\n');
+            element.append('<br /><button class="savechanges">Save</button>\n');
+            return this;
+        },
+        getbyname: function () {
+            users.fetch({
+                success: function (collection, response) {
+                    var username = $('#user-name').val();
+                    var theuser = _.filter(response, function (item) {
+                        return item.name[0].value === username;
+                    });
+                    //console.log(theuser);
+                    //console.log(this);
+
+                    $('#user-email').val(theuser[0].mail[0].value);
+                    $('#user-access').val(theuser[0].access[0].value);
+                }
+            });
+        },
+        savechanges: function (collection, response) {
+
+            var newEmail = $('#user-email').val();
+
+            users.fetch({
+                success: function (collection, response) {
+                    console.log(collection);
+                    var username = $('#user-name').val();
+                    var theuser = _.filter(response, function (item) {
+                        return item.name[0].value === username;
+                    });
+                    console.log(this);
+                    //console.log(newEmail);
+                    //theuser[0].mail[0].value = newEmail;
+                    theuser[0].mail[0].value = newEmail;
+                    //theuser.save();
+
+                }
+            });
+            console.log(theuser);
+
+            //users;
+        }
+    });
 
     // Main View that combines all elements.
     var DashContainer = Backbone.View.extend({
@@ -157,6 +215,9 @@
             $(this.el).prepend('<p>Total number of users: ' + totalusers + ' </p>');
 
             this.$el.prepend('<h2>Users by role</h2>');
+
+            var userdisplay = new userDisplay({collection: collection, model: response});
+            this.$el.prepend(userdisplay.render(collection, response).el);
 
 
         },
@@ -201,8 +262,6 @@
                     var sorted = _.sortBy(response, function (item) {
                         return item.name[0].value;
                     });
-
-                    console.log(sorted);
 
                     return userList.render(collection, sorted).el;
 
