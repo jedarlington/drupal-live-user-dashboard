@@ -1,5 +1,5 @@
 user_dashboard.description:
-  title: Page Example
+  title: User Dashboard
   route_name: user_dashboard_description
   expanded: TRUE
 

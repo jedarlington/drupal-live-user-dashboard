@@ -1,10 +1,14 @@
 name: User Dashboard
 type: module
 description: 'An example module showing how to define a page to be displayed at a given URL.'
-package: Example modules
+package: CTI Custom
 # core: 8.x
 dependencies:
   - node
+  - rest
+  - hal
+  - basic_auth
+  - restui
 
 # Information added by Drupal.org packaging script on 2016-06-26
 version: '8.x-1.x-dev'
