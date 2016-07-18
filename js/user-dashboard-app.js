@@ -170,22 +170,19 @@
 
             users.fetch({
                 success: function (collection, response) {
-                    console.log(collection);
+                    console.log(collection.models);
                     var username = $('#user-name').val();
-                    var theuser = _.filter(response, function (item) {
-                        return item.name[0].value === username;
+                    var theuser = _.filter(collection.models, function (item) {
+                        return item.attributes.name[0].value === username;
                     });
-                    console.log(this);
-                    //console.log(newEmail);
-                    //theuser[0].mail[0].value = newEmail;
-                    theuser[0].mail[0].value = newEmail;
-                    //theuser.save();
-
+                    console.log(theuser);
+                    console.log(theuser.set({mail: {value: newEmail}}));
+                    var edituser = collection.get({cid: 'c335'});
+                    console.log(theuser);
                 }
             });
-            console.log(theuser);
+            //console.log(collection);
 
-            //users;
         }
     });
 
