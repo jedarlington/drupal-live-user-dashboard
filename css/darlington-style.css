@@ -1,0 +1,89 @@
+body {
+    background-color: #eee;
+    padding: 2em;
+}
+
+#books {
+    clear: both;
+    margin-top: 10em;
+}
+
+.userContainer {}
+
+.bookContainer {
+    border: 1px solid #aaa;
+    width: 300px;
+    height: 130px;
+    background-color: #fff;
+    float: left;
+    margin: 5px;
+}
+
+.userContainer h3 {
+    clear: both;
+    float: left;
+}
+
+.userContainer button {
+    margin: 1.75em;
+}
+
+.userContainer img,
+.bookContainer img {
+    float: left;
+    margin: 10px;
+}
+
+.userContainer ul,
+.bookContainer ul {
+    list-style-type: none;
+}
+
+#addBook label {
+    width:100px;
+    margin-right:10px;
+    text-align:right;
+    line-height:25px;
+}
+
+#addUser input {
+    margin-right: 10px;
+}
+
+#addUser label,
+#addUser input,
+#addBook label,
+#addBook input {
+    display:block;
+    margin-bottom:10px;
+    float:left;
+}
+
+#addUser label[for="name"],
+#addBook label[for="title"],
+#addBook label[for="releaseDate"] {
+    clear:both;
+}
+
+#addBook button {
+    display:block;
+    margin:5px 20px 10px 10px;
+    float: right;
+    clear: both;
+}
+
+#addUser div,
+#addBook div {
+    width: 550px;
+}
+
+#addUser div:after,
+#addBook div:after {
+    content:"";
+    display:block;
+    height:0;
+    visibility:hidden;
+    clear:both;
+    font-size:0;
+    line-height:0;
+}

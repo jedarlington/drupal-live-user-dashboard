@@ -1,0 +1,23 @@
+{
+  "name": "drupal-live-user-dashboard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "browserify": "^13.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jedarlington/drupal-live-user-dashboard.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jedarlington/drupal-live-user-dashboard/issues"
+  },
+  "homepage": "https://github.com/jedarlington/drupal-live-user-dashboard#readme"
+}
