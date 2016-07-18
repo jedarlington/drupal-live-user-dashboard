@@ -1,3 +1,16 @@
-.body {
-    background-color: black;
+.user-list {
+    margin: 0;
+    padding: 0;
+}
+.user-list li {
+    list-style: none;
+    padding: .5rem 1rem;
+}
+
+.user-list li:nth-child(odd) {
+    background-color: #d7d7d7;
+}
+
+#userdashboard .controls {
+    margin: 1rem 0;
 }
