@@ -248,8 +248,8 @@
 
                     var uuid = theuser[0].get('uuid');
                     var uid = theuser[0].get('uid');
-                    theuser[0].set({mail: {value: newEmail}});
-                    theuser[0].set({id: uuid[0].value});
+                    theuser[0].set({mail: [{value: newEmail}]});
+                    //theuser[0].set({id: uuid[0].value});
 
                     console.log(theuser[0]);
 
