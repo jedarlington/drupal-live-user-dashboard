@@ -7,3 +7,4 @@ userdashbaord-assets:
     js/user-dashboard-app.js: {}
   dependencies:
     - core/jquery
+    - core/backbone
