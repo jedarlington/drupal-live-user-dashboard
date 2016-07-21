@@ -26,11 +26,26 @@
     });
 
 
-
     // Model
     var User = Backbone.Model.extend({
         urlRoot: 'user',
-
+        idAttribute: 'uuid',
+        parse: function (data) {
+            var attributes = [];
+            _.each(data, function (value, key, list) {
+                if (value[0]) {
+                    attributes[key] = value[0].value;
+                }
+                else {
+                    attributes[key] = value;
+                }
+            });
+            delete attributes.changed;
+            delete attributes.preferred_langcode;
+            delete attributes._embedded;
+            delete attributes.default_langcode;
+            return attributes;
+        },
         sync: function (method, model, options) {
 
             // Set authentication.
@@ -46,7 +61,10 @@
 
             switch (method) {
                 case 'patch':
-                    options.url = '../user/' + this.attributes.uid[0].value + '?DEBUG_SESSION_START=foobar';
+                    options.url = '../user/' + this.attributes.uid + '?_format=hal_json&DEBUG_SESSION_START=foobar';
+                    break;
+                case 'create':
+                    options.url = '../user/' + this.attributes.uid + '?_format=hal_json&DEBUG_SESSION_START=foobar';
                     break;
             }
             // console.log(method);
@@ -54,6 +72,12 @@
             // console.log(options);
 
             return Backbone.sync.apply(this, arguments);
+        },
+        save: function(attrs, options) {
+                options.patch = true;
+            // Proxy the call to the original save function
+            Backbone.Model.prototype.save.call(this, attrs, options);
+
         }
 
     });
@@ -85,6 +109,7 @@
     var nodes = new Nodes();
     nodes.fetch({
         success: function (collection, response) {
+
         }
     });
 
@@ -230,31 +255,31 @@
 
             var newEmail = $('#user-email').val();
 
-            var users = new Users();
-            users.fetch({
+
+            var saveusers = new Users();
+            saveusers.fetch({
                 success: function (collection, response) {
-                    console.log(collection);
-
-
                     var username = $('#user-name').val();
                     var theuser = _.filter(collection.models, function (item) {
-                        console.log(item);
-
-                        return item.attributes.name[0].value === username;
+                        return item.attributes.name === username;
                     });
-
-                    console.log(theuser);
-
 
                     var uuid = theuser[0].get('uuid');
                     var uid = theuser[0].get('uid');
-                    theuser[0].set({mail: [{value: newEmail}]});
-                    //theuser[0].set({id: uuid[0].value});
+                    theuser[0].set({mail: newEmail});
 
-                    console.log(theuser[0]);
+                    var attrs = {id: uuid[0].value, mail: {value: newEmail}};
+                    theuser[0].save(theuser[0].attributes, {
+                        patch: true,
+                        success: function () {
 
-                    //var attrs = {id: uuid[0].value, mail: {value: newEmail}};
-                    theuser[0].save(theuser[0].attributes, {patch: true});
+                    },
+                        error: function (data, error) {
+                            console.log(data);
+                            console.log(error);
+
+                        }
+                    });
 
                 }
             });
@@ -365,7 +390,6 @@
                     var groupadmin = [];
 
                     _.filter(response, function (obj) {
-                        console.log(obj);
                             if (obj.roles && obj.roles[0].target_id === selectedrole) {
                                 groupadmin.push(obj);
                             }
@@ -403,8 +427,6 @@
             //var userNodesView = new UserNodesView();
             //this.$el.prepend(userNodesView.render(collection, response).el);
 
-
-            console.log(response);
         }
     });
 })(jQuery);
