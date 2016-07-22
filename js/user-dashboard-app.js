@@ -9,21 +9,10 @@
             .get(Drupal.url('rest/session/token'))
             .done(function (data) {
                 window.csrfToken = data;
-                console.log(window.csrfToken);
             });
     }
 
     getCsrfToken();
-
-    $.ajaxSetup({
-        beforeSend: function (xhr, settings) {
-            if (!(/^http:./.test(settings.url) || /^https:./.test(settings.url))) {
-            // Only send the token to relative URLs i.e. locally.
-                xhr.setRequestHeader('X-CSRFToken', window.csrfToken);
-            }
-        }
-    });
-
 
     // Model
     var User = Backbone.Model.extend({
@@ -32,7 +21,6 @@
             this.set('id', this.attributes.uuid[0].value);
         },
         sync: function (method, model, options) {
-
             // Set authentication.
             options = options || (options = {});
             options.beforeSend = function (xhr) {
@@ -41,11 +29,13 @@
 
                 xhr.setRequestHeader('Content-Type', 'application/hal+json');
                 xhr.setRequestHeader('Authorization', ('Basic ' + btoa(user + ':' + pass)));
-                xhr.setRequestHeader('X-CSRF-Token', window.csrfToken);
+                // Only send the token to relative URLs i.e. locally.
+                if (!(/^http:./.test(Drupal.url.isLocal(window.location.href)) || /^https:./.test(Drupal.url.isLocal(window.location.href)))) {
+                    xhr.setRequestHeader('X-CSRF-Token', window.csrfToken);
+                }
             };
 
-            console.log(this);
-
+            // Remove duplicate id attributes (Not too sure why this is duplicated).
             delete this.attributes.id;
 
             switch (method) {
@@ -56,7 +46,6 @@
                     options.url = '../user/' + this.attributes.uid[0].value + '?_format=hal_json&DEBUG_SESSION_START=foobar';
                     break;
             }
-
             return Backbone.sync.apply(this, arguments);
         },
         save: function(attrs, options) {
@@ -93,7 +82,7 @@
     var nodes = new Nodes();
     nodes.fetch({
         success: function (collection, response) {
-
+            console.log(collection);
         }
     });
 
@@ -126,13 +115,11 @@
             $('#userdashboard').append(element);
             return this; // returning this for chaining..
         }
-
     });
 
     var UserView = Backbone.View.extend({
         tagName: 'li',
         className: 'user',
-
         initialize: function () {
             _.bindAll(this, 'render');
         },
@@ -206,28 +193,29 @@
             element.collection = collection;
 
             element.append('<label for="user-name">User name:</label><input type="text" id="user-name" name="user-name" value="">');
-            element.append('<label for="user-access">Last access time:</label><input type="text" id="user-access" name="user-access" value="">');
+            element.append('<label for="user-access">Last access time:</label><time id="user-access" datetime="" class=" "></time>');
             element.append('<label for="user-email">Email Address:</label><input type="email" id="user-email" name="user-email" value="">');
             element.append('<br /><button class="getbyname">Get User by name</button>\n');
             element.append('<br /><button class="savechanges">Save</button>\n');
             return this;
         },
         getbyname: function () {
+            // Clear all other input values.
             this.$el.find('input:not(#user-name)').val('');
             var self = this;
             users.fetch({
                 success: function (collection, response) {
                     var username = $('#user-name').val();
+                    // Filter out all models without the correct name (Needs logic for users with same name).
                     var theuser = _.filter(response, function (item) {
-
                         return item.name[0].value === username;
                     });
 
-                    if(0 < theuser.length) {
+                    // Double check a user has been returned.
+                    if(theuser.length > 0) {
                         var lastaccess = self.timeago(theuser[0].access[0].value);
-
                         $('#user-email').val(theuser[0].mail[0].value);
-                        $('#user-access').val(lastaccess);
+                        $('#user-access').text(lastaccess).attr('datetime', lastaccess).addClass('timeago');
                     }
                     else {
                         alert('User not found!');
@@ -238,7 +226,6 @@
         savechanges: function (collection, response) {
 
             var newEmail = $('#user-email').val();
-
 
             var saveusers = new Users();
             saveusers.fetch({
@@ -251,79 +238,31 @@
                     var uuid = theuser[0].get('uuid');
                     var uid = theuser[0].get('uid');
                     theuser[0].set({mail: {value: newEmail}});
-                    //theuser[0]['id'] = uuid[0].value;
 
-
+                    // Create object to save back to entity.
                     var updates = {
                     mail: {value: newEmail},
                         _links: theuser[0].get('_links')
                     };
 
-                    console.log(updates);
-
-
-
-
                     theuser[0].save(updates, {
                         patch: true,
                         success: function () {
-                            console.log('success');
-
+                            console.log('Save successful');
                     },
                         error: function (data, error) {
                             console.log(data);
                             console.log(error);
-
                         }
                     });
 
                 }
             });
         },
-        convertdate: function (passeddate) {
-            var timestamp = passeddate;
-            if (timestamp != 0) {
-                date = new Date(timestamp * 1000);
-
-                var year = date.getFullYear();
-                var month = date.getMonth() + 1;
-                var day = date.getDate();
-                var hours = date.getHours();
-                var mins = date.getMinutes();
-                var datevalues = day + '/' + month + '/' + year;
-
-                return datevalues;
-            }
-            else {
-                return 'Never';
-            }
-        },
         timeago: function (date) {
+            console.log(date);
             if (date != 0) {
-                var seconds = Math.floor((new Date() - date) / 1000);
-
-                var interval = Math.floor(seconds / 31536000);
-
-                if (interval > 1) {
-                    return interval + ' years';
-                }
-                interval = Math.floor(seconds / 2592000);
-                if (interval > 1) {
-                    return interval + ' months';
-                }
-                interval = Math.floor(seconds / 86400);
-                if (interval > 1) {
-                    return interval + ' days';
-                }
-                interval = Math.floor(seconds / 3600);
-                if (interval > 1) {
-                    return interval + ' hours';
-                }
-                interval = Math.floor(seconds / 60);
-                if (interval > 1) {
-                    return interval + ' minutes';
-                }
-                return Math.floor(seconds) + ' seconds';
+                return date;
             }
             else {
                 return 'Never';

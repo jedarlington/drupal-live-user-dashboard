@@ -14,3 +14,15 @@
 #userdashboard .controls {
     margin: 1rem 0;
 }
+
+input[type="text"],
+input[type="email"],
+time {
+    box-sizing: border-box;
+    border: 1px solid #bfbfbf;
+    line-height: 2rem;
+    padding: 0 .25rem;
+    height: 2rem;
+    display: block;
+    width: 100%;
+}

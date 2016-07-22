@@ -4,6 +4,7 @@ userdashbaord-assets:
     theme:
       css/styles.css: {}
   js:
+    js/timeconverter.js: {}
     js/user-dashboard-app.js: {}
   dependencies:
     - core/jquery
