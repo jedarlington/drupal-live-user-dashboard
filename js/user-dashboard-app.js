@@ -4,6 +4,18 @@
 
     // Get the CSRF Token and add it to the window object.
 
+    function getuserinfo () {
+        jQuery
+            .get(Drupal.url('user'))
+            .done(function (data) {
+                console.log(data);
+            });
+
+    };
+
+    getuserinfo();
+
+
     function getCsrfToken() {
         jQuery
             .get(Drupal.url('rest/session/token'))
@@ -13,6 +25,8 @@
     }
 
     getCsrfToken();
+    console.log(window);
+
 
     // Model
     var User = Backbone.Model.extend({
@@ -26,6 +40,7 @@
             options.beforeSend = function (xhr) {
                 var user = 'restuser';
                 var pass = 'restuser';
+
 
                 xhr.setRequestHeader('Content-Type', 'application/hal+json');
                 xhr.setRequestHeader('Authorization', ('Basic ' + btoa(user + ':' + pass)));
@@ -82,7 +97,7 @@
     var nodes = new Nodes();
     nodes.fetch({
         success: function (collection, response) {
-            console.log(collection);
+           // console.log(collection);
         }
     });
 
@@ -122,6 +137,7 @@
         className: 'user',
         initialize: function () {
             _.bindAll(this, 'render');
+            this.listenTo(this.model, 'change', this.render);
         },
         render: function () {
             var element = $(this.el);
@@ -195,6 +211,7 @@
             element.append('<label for="user-name">User name:</label><input type="text" id="user-name" name="user-name" value="">');
             element.append('<label for="user-access">Last access time:</label><time id="user-access" datetime="" class=" "></time>');
             element.append('<label for="user-email">Email Address:</label><input type="email" id="user-email" name="user-email" value="">');
+            element.append('<input type="hidden" id="user-uuid" name="user-uuid" value="">');
             element.append('<br /><button class="getbyname">Get User by name</button>\n');
             element.append('<br /><button class="savechanges">Save</button>\n');
             return this;
@@ -215,7 +232,11 @@
                     if(theuser.length > 0) {
                         var lastaccess = self.timeago(theuser[0].access[0].value);
                         $('#user-email').val(theuser[0].mail[0].value);
-                        $('#user-access').text(lastaccess).attr('datetime', lastaccess).addClass('timeago');
+                        $('#user-access').text(lastaccess).attr('datetime', lastaccess);
+                        if ($('#user-access').attr('datetime') != 'Never') {
+                            $('#user-access').addClass('timeago');
+                        }
+                        $('#user-uuid').val(theuser[0].uuid[0].value);
                     }
                     else {
                         alert('User not found!');
@@ -226,23 +247,25 @@
         savechanges: function (collection, response) {
 
             var newEmail = $('#user-email').val();
+            var uuid = $('#user-uuid').val();
+            var newUsername = $('#user-name').val();
 
             var saveusers = new Users();
             saveusers.fetch({
                 success: function (collection, response) {
-                    var username = $('#user-name').val();
+                    var useruuid = $('#user-uuid').val();
                     var theuser = _.filter(collection.models, function (item) {
-                        return item.attributes.name[0].value === username;
+                        return item.attributes.uuid[0].value === useruuid;
                     });
-
-                    var uuid = theuser[0].get('uuid');
-                    var uid = theuser[0].get('uid');
-                    theuser[0].set({mail: {value: newEmail}});
 
                     // Create object to save back to entity.
                     var updates = {
-                    mail: {value: newEmail},
-                        _links: theuser[0].get('_links')
+                    _links: theuser[0].get('_links'),
+                    mail: {
+                        value: newEmail
+                    }, name: {
+                        value: newUsername
+                    }
                     };
 
                     theuser[0].save(updates, {
@@ -260,8 +283,7 @@
             });
         },
         timeago: function (date) {
-            console.log(date);
-            if (date != 0) {
+            if (date > 0) {
                 return date;
             }
             else {
@@ -302,6 +324,10 @@
             // Create user by role view but don't render until value selected.
             var userdisplay = new userDisplay({collection: collection, model: response});
             this.$el.prepend(userdisplay.render(collection, response).el);
+
+            // Create user by role view but don't render until value selected.
+            var userNodesView = new UserNodesView({collection: collection, model: response});
+            this.$el.append(userNodesView.render(collection, response).el);
 
         },
         cleartheview: function () {
@@ -350,6 +376,19 @@
         }
     });
 
+    var UserRolesView = Backbone.View.extend({
+        className: 'user-roles',
+        initialize: function () {
+            _.bindAll(this, 'render');
+        },
+        render: function (collection, response) {
+            element.collection = collection;
+            console.log(collection);
+
+
+        }
+    });
+
     var UserNodesView = Backbone.View.extend({
         className: 'user-node',
         initialize: function () {
@@ -357,11 +396,96 @@
         },
         render: function (collection, response) {
 
+            var element = $(this.el);
+            // Clear potential old entries first
+            element.empty();
+
             // Node vs user stats view.
-            var nodes = new Nodes();
+            console.log(collection.models);
+
+            var adminroles = [];
+
+            _.filter(response, function (obj) {
+                console.log(obj);
+
+                if (obj.roles && obj.roles[0].target_id) {
+                    adminroles.push(obj.roles[0].target_id);
+                }
+                return adminroles;
+            });
+
+            var roles = {};
+            adminroles.forEach(function(x) {
+                roles[x] = (roles[x] || 0) + 1;
+            });
+
+            console.log(element);
+
+            var rolename = [],
+                numbers = [];
+
+            for (var property in roles) {
+
+                if (!roles.hasOwnProperty(property)) {
+                    continue;
+                }
+
+                rolename.push(property);
+                numbers.push(roles[property]);
+            }
+
+            console.log(rolename);
+            console.log(numbers);
+
+            function getRandomColor() {
+                var letters = '0123456789ABCDEF'.split('');
+                var color = '#';
+                for (var i = 0; i < 6; i++ ) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+
+            var colours = [];
+
+            for (var property in rolename) {
+                var newcolour = getRandomColor();
+                colours.push(newcolour);
+            }
+
+            console.log(colours);
+
+
+            var ctx = $('#user-roles-chart');
+
+                var myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: rolename,
+                        datasets: [{
+                            label: '# of Users',
+                            data: numbers,
+                            backgroundColor: colours,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true,
+                                    fixedStepSize: 1
+                                }
+                            }]
+                        }
+                    }
+                });
+
+
+
             //var userNodesView = new UserNodesView();
             //this.$el.prepend(userNodesView.render(collection, response).el);
-
+            return this;
         }
     });
 })(jQuery);

@@ -6,6 +6,7 @@ userdashbaord-assets:
   js:
     js/timeconverter.js: {}
     js/user-dashboard-app.js: {}
+    https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.js: { type: external }
   dependencies:
     - core/jquery
     - core/backbone

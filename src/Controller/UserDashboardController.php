@@ -26,7 +26,7 @@ class UserDashboardController extends ControllerBase {
 
     // Assemble the markup.
     $build = array(
-      '#markup' => $this->t('<p>Welcome to the User Dashboard.</p><div id="userdashboard"></div>'),
+      '#markup' => $this->t('<p>Welcome to the User Dashboard.</p><div id="userdashboard"><canvas id="user-roles-chart" width="400" height="400"></canvas></div>'),
       '#attached' => array(
         'library' => array('user_dashboard/userdashbaord-assets'),
       ),
