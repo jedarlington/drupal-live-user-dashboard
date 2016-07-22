@@ -2,6 +2,18 @@
     margin: 0;
     padding: 0;
 }
+#userdashboard,
+#user-roles-chart,
+#graph-wrapper {
+    display: inline-block;
+    width: 45%;
+    vertical-align: top;
+    margin: 0 2.5%;
+}
+#userlist {
+
+}
+
 .user-list li {
     list-style: none;
     padding: .5rem 1rem;

@@ -4,9 +4,8 @@ userdashbaord-assets:
     theme:
       css/styles.css: {}
   js:
-    js/timeconverter.js: {}
-    js/user-dashboard-app.js: {}
-    https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.js: { type: external }
+    js/require.js: { attributes: {data-main: /modules/user_dashboard/js/go.js}}
+    js/require.config.js: {}
   dependencies:
     - core/jquery
     - core/backbone
