@@ -17,7 +17,6 @@
 
     $.ajaxSetup({
         beforeSend: function (xhr, settings) {
-
             if (!(/^http:./.test(settings.url) || /^https:./.test(settings.url))) {
             // Only send the token to relative URLs i.e. locally.
                 xhr.setRequestHeader('X-CSRFToken', window.csrfToken);
@@ -29,22 +28,8 @@
     // Model
     var User = Backbone.Model.extend({
         urlRoot: 'user',
-        idAttribute: 'uuid',
-        parse: function (data) {
-            var attributes = [];
-            _.each(data, function (value, key, list) {
-                if (value[0]) {
-                    attributes[key] = value[0].value;
-                }
-                else {
-                    attributes[key] = value;
-                }
-            });
-            delete attributes.changed;
-            delete attributes.preferred_langcode;
-            delete attributes._embedded;
-            delete attributes.default_langcode;
-            return attributes;
+        initialize: function () {
+            this.set('id', this.attributes.uuid[0].value);
         },
         sync: function (method, model, options) {
 
@@ -59,17 +44,18 @@
                 xhr.setRequestHeader('X-CSRF-Token', window.csrfToken);
             };
 
+            console.log(this);
+
+            delete this.attributes.id;
+
             switch (method) {
                 case 'patch':
-                    options.url = '../user/' + this.attributes.uid + '?_format=hal_json&DEBUG_SESSION_START=foobar';
+                    options.url = '../user/' + this.attributes.uid[0].value + '?_format=hal_json&DEBUG_SESSION_START=foobar';
                     break;
                 case 'create':
-                    options.url = '../user/' + this.attributes.uid + '?_format=hal_json&DEBUG_SESSION_START=foobar';
+                    options.url = '../user/' + this.attributes.uid[0].value + '?_format=hal_json&DEBUG_SESSION_START=foobar';
                     break;
             }
-            // console.log(method);
-            // console.log(model);
-            // console.log(options);
 
             return Backbone.sync.apply(this, arguments);
         },
@@ -77,9 +63,7 @@
                 options.patch = true;
             // Proxy the call to the original save function
             Backbone.Model.prototype.save.call(this, attrs, options);
-
         }
-
     });
 
     // Collection
@@ -261,17 +245,29 @@
                 success: function (collection, response) {
                     var username = $('#user-name').val();
                     var theuser = _.filter(collection.models, function (item) {
-                        return item.attributes.name === username;
+                        return item.attributes.name[0].value === username;
                     });
 
                     var uuid = theuser[0].get('uuid');
                     var uid = theuser[0].get('uid');
-                    theuser[0].set({mail: newEmail});
+                    theuser[0].set({mail: {value: newEmail}});
+                    //theuser[0]['id'] = uuid[0].value;
 
-                    var attrs = {id: uuid[0].value, mail: {value: newEmail}};
-                    theuser[0].save(theuser[0].attributes, {
+
+                    var updates = {
+                    mail: {value: newEmail},
+                        _links: theuser[0].get('_links')
+                    };
+
+                    console.log(updates);
+
+
+
+
+                    theuser[0].save(updates, {
                         patch: true,
                         success: function () {
+                            console.log('success');
 
                     },
                         error: function (data, error) {
