@@ -1,4 +1,4 @@
-var $ = jQuery;
+// View that displays graph with number of users per role.
 
 var UserNodesView = Backbone.View.extend({
     className: 'user-node',
@@ -15,6 +15,7 @@ var UserNodesView = Backbone.View.extend({
 
         var adminroles = [];
 
+        // Collect all the roles into an array.
         _.filter(response, function (obj) {
             if (obj.roles && obj.roles[0].target_id) {
                 adminroles.push(obj.roles[0].target_id);
@@ -22,11 +23,13 @@ var UserNodesView = Backbone.View.extend({
             return adminroles;
         });
 
+        // Count users per role.
         var roles = {};
         adminroles.forEach(function(x) {
             roles[x] = (roles[x] || 0) + 1;
         });
 
+        // Create an array holding the roles names the number of users per role
         var rolename = [],
             numbers = [];
 
@@ -43,7 +46,7 @@ var UserNodesView = Backbone.View.extend({
         function getRandomColor() {
             var letters = '0123456789ABCDEF'.split('');
             var color = '#';
-            for (var i = 0; i < 6; i++ ) {
+            for (var i = 0; i < 6; i++) {
                 color += letters[Math.floor(Math.random() * 16)];
             }
             return color;
@@ -55,7 +58,6 @@ var UserNodesView = Backbone.View.extend({
             var newcolour = getRandomColor();
             colours.push(newcolour);
         }
-
 
         var ctx = $('#user-roles-chart');
 

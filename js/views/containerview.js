@@ -1,4 +1,4 @@
-var $ = jQuery;
+// Main View that combines all elements.
 
 var DashContainer = Backbone.View.extend({
     tagName: 'div',
@@ -25,9 +25,7 @@ var DashContainer = Backbone.View.extend({
         // Display total users in collection.
         var totalusers = _.size(response);
         $('#userlist').prepend('<p>Total number of users: ' + totalusers + ' </p>');
-
-        this.$el.prepend('<h2>Users by role</h2>');
-
+        
         // Create user by role view but don't render until value selected.
         var userdisplay = new userDisplay({collection: collection, model: response});
         this.$el.prepend(userdisplay.render(collection, response).el);

@@ -1,23 +1,28 @@
-var $ = jQuery;
+// Individual user view.
 
 var UserView = Backbone.View.extend({
     tagName: 'li',
     className: 'user',
     initialize: function () {
-        _.bindAll(this, 'render');
         this.listenTo(this.model, 'change', this.render);
     },
     render: function () {
-        var element = jQuery(this.el);
+        var element = $(this.el);
         // Clear potential old entries first
 
         element.empty();
         function getname(model) {
             var thename = _.flatten(_.map(model.name, _.values));
+            var theroles = _.flatten(_.map(model.roles, _.values)).join(', ');
+            console.log(theroles);
             if (_.flatten(_.map(model.uid, _.values)) == '0') {
                 thename = 'anonymous';
             }
-            return thename;
+            if (!theroles) {
+                theroles = 'No roles';
+            }
+            var output = '<span class="name">' + thename + '</span>' + '<span class="roles">Roles: ' + theroles + '</span>';
+            return output;
         }
 
         element.append(getname(this.model));
@@ -28,11 +33,10 @@ var UserView = Backbone.View.extend({
 var DashBoardControls = Backbone.View.extend({
     className: 'controls',
     initialize: function () {
-        _.bindAll(this, 'render');
     },
     render: function (response) {
 
-        var element = jQuery(this.el);
+        var element = $(this.el);
         // Clear potential old entries first
         element.empty();
 
@@ -49,9 +53,9 @@ var DashBoardControls = Backbone.View.extend({
 
             if (model.roles) {
                 var therole = model.roles[0].target_id;
-                var dupCheck = jQuery(element).find('#roles-select option[value=' + therole + ']').length;
+                var dupCheck = $(element).find('#roles-select option[value=' + therole + ']').length;
                 if (dupCheck === 0) {
-                    jQuery(element).find('#roles-select').append(jQuery('<option>', {
+                    $(element).find('#roles-select').append($('<option>', {
                         value: therole,
                         text: therole
                     }));

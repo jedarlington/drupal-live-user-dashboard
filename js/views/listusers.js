@@ -1,3 +1,5 @@
+// Parent view which generates individual user views.
+
 var UserList = Backbone.View.extend({
     tagName: 'ul',
     className: 'user-list',
@@ -15,6 +17,9 @@ var UserList = Backbone.View.extend({
         // Clear potential old entries first
         element.empty();
 
+        element.append('<h2>Users by role</h2>');
+
+
         // Loop through all the models and create a userView for each item.
         _.each(response, function (value, key) {
             var userView = new UserView({model: value});
@@ -24,6 +29,8 @@ var UserList = Backbone.View.extend({
         // Add dashboard controls.
         var dashcontroller = new DashBoardControls();
         element.append(dashcontroller.render().el);
+
+
 
         return this; // returning this for chaining..
     }

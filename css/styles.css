@@ -1,17 +1,20 @@
-.user-list {
-    margin: 0;
-    padding: 0;
+/* General layout */
+#userdashboard-wrapper > div {
+    display: inline-block;
 }
+
 #userdashboard,
 #user-roles-chart,
 #graph-wrapper {
     display: inline-block;
     width: 45%;
     vertical-align: top;
-    margin: 0 2.5%;
 }
-#userlist {
 
+/* User list by roles */
+.user-list {
+    margin: 0;
+    padding: 0;
 }
 
 .user-list li {
@@ -23,9 +26,16 @@
     background-color: #d7d7d7;
 }
 
+.user-list .roles {
+    float: right;
+    display: inline-block;
+}
+
 #userdashboard .controls {
     margin: 1rem 0;
 }
+
+/* Forms and general items */
 
 input[type="text"],
 input[type="email"],
@@ -38,3 +48,26 @@ time {
     display: block;
     width: 100%;
 }
+
+#userdashboard-wrapper button {
+    background-color: #0e69be;
+    color: white;
+    padding: .5rem 1rem;
+    border: none;
+    border-radius: 25px;
+    margin: .25rem .25rem .25rem 0;
+    transition: all .3s;
+}
+
+#userdashboard-wrapper button:hover {
+    background-color: #0e4080;
+}
+
+/* Chart styles */
+
+#user-roles-chart {
+    padding: 0 2rem;
+}
+
+
+

@@ -86,16 +86,6 @@ requirejs(
         }
     });
 
-    // Main View that combines all elements.
-
-    // Parent view which generates individual user views.
-
-    // Individual user view.
-    // View for viewing induvidual user nodes.
-
-    // View that displays graph with number of users per role.
-
-
     var UserRolesView = Backbone.View.extend({
         className: 'user-roles',
         initialize: function () {
@@ -106,6 +96,4 @@ requirejs(
 
         }
     });
-
-
 });

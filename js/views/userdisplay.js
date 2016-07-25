@@ -1,4 +1,4 @@
-var $ = jQuery;
+// View for viewing individual user nodes.
 
 var userDisplay = Backbone.View.extend({
     className: 'addUser',
