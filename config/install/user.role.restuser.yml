@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies: {  }
+id: restuser
+label: RESTuser
+weight: 4
+is_admin: null
+permissions:
+  - 'create page content'
+  - 'delete any page content'
+  - 'delete own page content'
+  - 'delete page revisions'
+  - 'edit any page content'
+  - 'edit own page content'
+  - 'revert page revisions'
+  - 'view page revisions'
+  - 'administer users'
+  - 'administer account settings'
+  - 'administer permissions'
+  - 'cancel account'
+  - 'administer user fields'

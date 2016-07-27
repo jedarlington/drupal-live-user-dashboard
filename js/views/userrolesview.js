@@ -1,7 +1,7 @@
 // View that displays graph with number of users per role.
 
-var UserNodesView = Backbone.View.extend({
-    className: 'user-node',
+var UserRolesView = Backbone.View.extend({
+    className: 'user-roles',
     initialize: function () {
         _.bindAll(this, 'render');
     },

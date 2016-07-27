@@ -4,6 +4,7 @@ var User = Backbone.Model.extend({
         this.set('id', this.attributes.uuid[0].value);
     },
     sync: function (method, model, options) {
+
         // Set authentication.
         options = options || (options = {});
         options.beforeSend = function (xhr) {

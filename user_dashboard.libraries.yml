@@ -3,9 +3,9 @@ userdashbaord-assets:
   css:
     theme:
       css/styles.css: {}
+      js/vendor/tag-it/css/jquery.tagit.css: {}
   js:
     js/require.js: { attributes: {data-main: /modules/user_dashboard/js/go.js}}
-    js/require.config.js: {}
   dependencies:
     - core/jquery
     - core/backbone

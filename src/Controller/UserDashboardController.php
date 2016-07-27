@@ -31,6 +31,7 @@ class UserDashboardController extends ControllerBase {
                             '<div id="userdashboard"></div>' .
                             '<div id="graph-wrapper"><canvas id="user-roles-chart" width="400" height="400"></canvas></div>' .
                             '<div id="userlist"></div>' .
+                            '<div id="user-node-chart-wrapper"><canvas id="user-node-chart" width="400" height="400"></canvas></div>' .
                             '</div>'),
       '#attached' => array(
         'library' => array('user_dashboard/userdashbaord-assets'),
